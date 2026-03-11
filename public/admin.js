@@ -296,4 +296,5 @@ function escapeHtml(s){
     .replaceAll('>','&gt;')
     .replaceAll('"','&quot;')
     .replaceAll("'",'&#39;');
+
 }
