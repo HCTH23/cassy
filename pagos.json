@@ -1,0 +1,15 @@
+[
+  {
+    "id": "1772827294822_74310",
+    "nombre": "homero",
+    "mail": "",
+    "telefono": "123",
+    "cuotas": [
+      {
+        "mes": "marzo 2025",
+        "monto": 90000,
+        "estado": "pendiente"
+      }
+    ]
+  }
+]

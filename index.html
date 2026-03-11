@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mis cuotas</title>
+  <style>
+    :root{
+      --bg:#f4f6f9;
+      --card:#ffffff;
+      --text:#1b1f24;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --ok:#16a34a;
+      --warn:#f59e0b;
+      --bad:#dc2626;
+      --shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .wrap{ width:min(980px, 100%); }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    header{
+      padding:20px 22px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    header h1{ font-size:18px; margin:0; }
+    header .hint{ color:var(--muted); font-size:13px; }
+
+    .content{ padding:22px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:18px;
+    }
+    @media (max-width: 900px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    label{ font-size:13px; color:var(--muted); display:block; margin:10px 0 6px; }
+    input{
+      width:100%;
+      padding:11px 12px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      outline:none;
+      font-size:14px;
+      background:#fff;
+    }
+    input:focus{ border-color:#c7d2fe; box-shadow:0 0 0 4px rgba(99,102,241,.12); }
+
+    .row{ display:flex; gap:10px; }
+    .row > *{ flex:1; }
+
+    button{
+      border:0;
+      border-radius:12px;
+      padding:11px 12px;
+      font-weight:600;
+      cursor:pointer;
+      font-size:14px;
+    }
+    .btn{ background:#111827; color:#fff; }
+    .btn:disabled{ opacity:.5; cursor:not-allowed; }
+
+    .btn2{ background:#fff; border:1px solid var(--border); }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:13px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--muted);
+    }
+
+    .alert{
+      margin-top:12px;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background: rgba(245, 158, 11, 0.12);
+    }
+    .alert b{ color:#7c2d12; }
+
+    .success{
+      margin-top:12px;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid rgba(22,163,74,.25);
+      background: rgba(22, 163, 74, 0.10);
+    }
+
+    .error{
+      margin-top:12px;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid rgba(220,38,38,.25);
+      background: rgba(220, 38, 38, 0.10);
+    }
+
+    .table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      border:1px solid var(--border);
+      border-radius:14px;
+      overflow:hidden;
+      background:#fff;
+    }
+    .table th, .table td{ padding:10px 12px; font-size:14px; border-bottom:1px solid var(--border); }
+    .table th{ text-align:left; color:var(--muted); font-weight:600; background:#fafafa; }
+    .table tr:last-child td{ border-bottom:0; }
+
+    .right{ text-align:right; }
+
+    .badge{
+      display:inline-block;
+      padding:4px 8px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+    }
+    .b-ok{ background:rgba(22,163,74,.12); color:var(--ok); }
+    .b-bad{ background:rgba(220,38,38,.12); color:var(--bad); }
+    .b-warn{ background:rgba(245,158,11,.12); color:var(--warn); }
+
+    .totals{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:12px;
+      background:#fff;
+    }
+    .totals .line{ display:flex; justify-content:space-between; margin:8px 0; color:var(--muted); }
+    .totals .line b{ color:var(--text); }
+    .totals .grand{ font-size:16px; }
+
+    .small{ font-size:12px; color:var(--muted); line-height:1.35; }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="card">
+    <header>
+      <div>
+        <h1>Mis cuotas</h1>
+        <div class="hint">Ingresá tu nombre y tu mail o teléfono para ver tus cuotas.</div>
+      </div>
+      <span class="pill" id="pillInfo">Interés: 0,5% diario · Se paga del 1 al 10 sin interés</span>
+    </header>
+
+    <div class="content">
+      <div class="grid">
+
+        <div>
+          <div class="row">
+            <div>
+              <label>Nombre completo</label>
+              <input id="nombre" placeholder="Ej: Homero Cabana" autocomplete="name" />
+            </div>
+            <div>
+              <label>Mail o teléfono</label>
+              <input id="contacto" placeholder="Ej: homero@mail.com / 351..." autocomplete="email" />
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:12px;">
+            <button class="btn" id="btnBuscar" onclick="buscar()">Ver mis cuotas</button>
+            <button class="btn2" onclick="limpiar()">Limpiar</button>
+          </div>
+
+          <div id="msg"></div>
+
+          <div id="panel" style="display:none; margin-top:16px;">
+            <h3 style="margin:14px 0 10px;">Resumen</h3>
+
+            <div id="warnConsec" class="alert" style="display:none;">
+              <b>Atención:</b> las cuotas pendientes no están en meses consecutivos (revisar en administración).
+            </div>
+
+            <div style="margin-top:12px;">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:40px;"></th>
+                    <th>Mes</th>
+                    <th class="right">Base</th>
+                    <th class="right">Interés</th>
+                    <th class="right">Total</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+              </table>
+            </div>
+
+            <div style="margin-top:12px;" class="totals">
+              <div class="line"><span>Base</span> <b id="tBase">$0</b></div>
+              <div class="line"><span>Interés</span> <b id="tInteres">$0</b></div>
+              <div class="line grand"><span>Total</span> <b id="tTotal">$0</b></div>
+              <div class="small" id="txtInteres"></div>
+            </div>
+
+            <div class="row" style="margin-top:12px;">
+              <button class="btn" id="btnPagar" onclick="pagarSeleccion()">Pagar con Mercado Pago</button>
+              <button class="btn2" onclick="seleccionarTodas()">Seleccionar todas</button>
+            </div>
+
+            <div class="small" style="margin-top:10px;">
+              * El pago se confirma cuando Mercado Pago lo aprueba. Después el sistema actualiza las cuotas automáticamente.
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 style="margin:0 0 10px;">Pautas De Trabajo</h3>
+          <ul style="margin:0; padding-left:18px; color:var(--muted); line-height:1.6;">
+            <li>Las cuotas se abonan del <b>1 al 10</b> de cada mes sin recargos.</li>
+            <li>Las cuotas abonadas después del día <b>10</b> tienen un recargo del <b>0,5%</b> diario a partir del día 1 del mes, respecto al precio total del conjunto.</li>
+            <li>Las cuotas deben ser mensuales y consecutivas.</li>
+            <li>Se prioriza la entrega de los grupos que abonan en tiempo y forma.</li>
+          </ul>
+
+          <div class="alert" style="margin-top:14px; background: rgba(17, 24, 39, 0.06);">
+            <b>Tip:</b> Si no encontrás tus datos, revisá que el nombre coincida igual.
+          </div>
+
+          <div class="alert" style="margin-top:14px;">
+            <b>Privacidad:</b> solo se muestran tus cuotas con nombre + mail/teléfono.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let ultimoResumen = null;
+
+  function money(n){
+    const v = Number(n || 0);
+    return v.toLocaleString('es-AR');
+  }
+
+  function setMsg(type, html){
+    const el = document.getElementById('msg');
+    if(!html){
+      el.innerHTML = '';
+      return;
+    }
+    const cls = type === 'ok' ? 'success' : type === 'error' ? 'error' : 'alert';
+    el.innerHTML = `<div class="${cls}">${html}</div>`;
+  }
+
+  function limpiar(){
+    document.getElementById('nombre').value = '';
+    document.getElementById('contacto').value = '';
+    document.getElementById('panel').style.display = 'none';
+    setMsg('', '');
+    ultimoResumen = null;
+  }
+
+  function escapeHtml(s){
+    return String(s ?? '')
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'",'&#39;');
+  }
+
+  async function buscar(){
+    const nombre = document.getElementById('nombre').value.trim();
+    const contacto = document.getElementById('contacto').value.trim();
+
+    if(!nombre || !contacto){
+      setMsg('error', 'Completá <b>nombre</b> y <b>mail o teléfono</b>.');
+      return;
+    }
+
+    const btn = document.getElementById('btnBuscar');
+    btn.disabled = true;
+    setMsg('warn', 'Buscando...');
+
+    try{
+      const qs = new URLSearchParams({ nombre, contacto });
+      const res = await fetch(`/api/resumen?${qs.toString()}`);
+      const data = await res.json();
+
+      if(!res.ok){
+        throw new Error(data?.error || 'Error');
+      }
+
+      ultimoResumen = { nombre, contacto, data };
+      render(data);
+      setMsg('ok', `Hola <b>${data.nombre}</b>. Encontramos tus cuotas.`);
+
+      mostrarEstadoMercadoPago();
+
+    }catch(e){
+      ultimoResumen = null;
+      document.getElementById('panel').style.display = 'none';
+      setMsg('error', e.message || 'No se encontraron datos');
+    }finally{
+      btn.disabled = false;
+    }
+  }
+
+  function render(data){
+    document.getElementById('panel').style.display = 'block';
+    document.getElementById('warnConsec').style.display = data.consecutivas ? 'none' : 'block';
+
+    const tbody = document.getElementById('tbody');
+    tbody.innerHTML = '';
+
+    const filas = [];
+
+    for(const c of data.pendientes){
+      filas.push(`
+        <tr>
+          <td><input type="checkbox" class="chk" data-mes="${escapeHtml(c.mes)}" checked /></td>
+          <td>${escapeHtml(c.mes)}</td>
+          <td class="right">$${money(c.montoBase)}</td>
+          <td class="right">$${money(c.interes)}</td>
+          <td class="right"><b>$${money(c.total)}</b></td>
+          <td><span class="badge b-bad">pendiente</span></td>
+        </tr>
+      `);
+    }
+
+    for(const c of data.pagadas){
+      filas.push(`
+        <tr>
+          <td></td>
+          <td>${escapeHtml(c.mes || '-')}</td>
+          <td class="right">$${money(c.monto || c.montoBase || 0)}</td>
+          <td class="right">$0</td>
+          <td class="right"><b>$${money(c.totalPagado || c.monto || 0)}</b></td>
+          <td><span class="badge b-ok">pagado</span></td>
+        </tr>
+      `);
+    }
+
+    tbody.innerHTML = filas.join('');
+
+    document.getElementById('tBase').textContent = `$${money(data.totalBase)}`;
+    document.getElementById('tInteres').textContent = `$${money(data.totalInteres)}`;
+    document.getElementById('tTotal').textContent = `$${money(data.totalPagar)}`;
+
+    const txt = data.pendientes.length > 0
+      ? `El recargo diario ya está calculado en cada cuota pendiente según su fecha correspondiente.`
+      : `No hay cuotas pendientes.`;
+
+    document.getElementById('txtInteres').innerHTML = txt;
+    document.getElementById('btnPagar').disabled = data.pendientes.length === 0;
+  }
+
+  function seleccionarTodas(){
+    document.querySelectorAll('.chk').forEach(ch => ch.checked = true);
+  }
+
+  async function pagarSeleccion(){
+    if(!ultimoResumen){
+      setMsg('error', 'Primero buscá tus cuotas.');
+      return;
+    }
+
+    const checks = Array.from(document.querySelectorAll('.chk')).filter(ch => ch.checked);
+    const meses = checks.map(ch => ch.getAttribute('data-mes')).filter(Boolean);
+
+    if(meses.length === 0){
+      setMsg('error', 'Seleccioná al menos una cuota para pagar.');
+      return;
+    }
+
+    const btn = document.getElementById('btnPagar');
+    btn.disabled = true;
+    setMsg('warn', 'Generando link de pago...');
+
+    try{
+      const res = await fetch('/api/mp/create-preference', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({
+          nombre: ultimoResumen.nombre,
+          contacto: ultimoResumen.contacto,
+          meses
+        })
+      });
+
+      const out = await res.json();
+
+      if(!res.ok){
+        throw new Error(out?.error || 'Error');
+      }
+
+      const url = out.init_point || out.sandbox_init_point;
+
+      if(!url){
+        throw new Error('Mercado Pago no devolvió URL de pago');
+      }
+
+      window.location.href = url;
+
+    }catch(e){
+      setMsg('error', e.message || 'Error creando pago');
+      btn.disabled = false;
+    }
+  }
+
+  function mostrarEstadoMercadoPago(){
+    const params = new URLSearchParams(window.location.search);
+    const mp = params.get('mp');
+
+    if(mp === 'success'){
+      setMsg('ok', 'Volviste desde Mercado Pago. Si el pago fue aprobado, el sistema actualizará las cuotas automáticamente.');
+    } else if(mp === 'pending'){
+      setMsg('warn', 'Tu pago quedó pendiente. Cuando Mercado Pago lo confirme, las cuotas se actualizarán.');
+    } else if(mp === 'failure'){
+      setMsg('error', 'El pago no se completó o fue cancelado.');
+    }
+  }
+
+  mostrarEstadoMercadoPago();
+</script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="top">
+      <h1>Panel de administración</h1>
+      <div class="sub">Gestión de clientes y cuotas</div>
+    </header>
+
+    <section id="login" class="card">
+      <h2>Entrar</h2>
+      <p class="muted">Ingresá la contraseña del administrador.</p>
+      <div class="row">
+        <input type="password" id="password" placeholder="Contraseña admin" />
+        <button class="btn" onclick="login()">Entrar</button>
+      </div>
+      <div id="loginMsg"></div>
+    </section>
+
+    <section id="panel" class="card" style="display:none;">
+      <div class="row" style="justify-content:space-between; align-items:center;">
+        <h2 style="margin:0;">Usuarios</h2>
+        <div class="row" style="gap:10px;">
+          <input id="buscarTxt" placeholder="Buscar por nombre" />
+          <button class="btn2" onclick="cargarUsuarios()">Actualizar</button>
+          <button class="btn2" onclick="salir()">Salir</button>
+        </div>
+      </div>
+
+      <hr>
+
+      <h3>Agregar usuario</h3>
+      <div class="grid3">
+        <input type="text" id="nuevoNombre" placeholder="Nombre completo" />
+        <input type="email" id="nuevoMail" placeholder="Correo" />
+        <input type="text" id="nuevoTelefono" placeholder="Teléfono" />
+      </div>
+      <button class="btn" onclick="agregarUsuario()">Agregar</button>
+
+      <hr>
+
+      <h3>Importar desde Excel</h3>
+      <div class="row">
+        <input type="file" id="excel" />
+        <button class="btn2" onclick="subirExcel()">Subir</button>
+      </div>
+
+      <hr>
+
+      <div id="usuarios"></div>
+    </section>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
